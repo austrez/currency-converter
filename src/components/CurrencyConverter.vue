@@ -64,25 +64,15 @@
 
 <script lang="ts">
 import { defineComponent, nextTick, reactive, ref } from 'vue';
+
 import { CurrencyApi } from '@/api/api';
+import {
+	INPUT_NAMES,
+	DEFAULT_CURRENCIES,
+	SUPPORTED_LANGS,
+} from '@/utils/consts';
 
 import type { TCurrency, TGetCurrenciesQuery } from '@/types/index';
-
-const INPUT_NAMES = {
-	FROM: 'FROM',
-	TO: 'TO',
-};
-
-const DEFAULT_CURRENCIES = {
-	USD: 'USD',
-	RUB: 'RUB',
-	EUR: 'EUR',
-};
-
-const SUPPORTED_LANGS = {
-	en: 'en',
-	ru: 'ru',
-};
 
 const getConvertionResult = async ({
 	from,
