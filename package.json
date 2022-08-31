@@ -8,7 +8,8 @@
 		"build-only": "vite build",
 		"type-check": "vue-tsc --noEmit",
 		"lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-		"format": "prettier --ignore-path .gitignore --write ."
+		"format": "prettier --ignore-path .gitignore --write .",
+		"deploy": "yarn build && surge ./dist exange-rates.surge.sh"
 	},
 	"dependencies": {
 		"axios": "^0.27.2",
