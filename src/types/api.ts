@@ -1,18 +1,18 @@
-type TSymbol = {
+type TCurrency = {
 	description: string; // E.g United States Dollar
 	code: string; // E.g USD
 };
 
-type TSymbols = {
-	[key: string]: TSymbol;
+type TCurrencies = {
+	[key: string]: TCurrency;
 };
 
-type TGetSymbolsData = {
+type TGetCurrenciesData = {
 	success: true;
-	symbols: TSymbols;
+	symbols: TCurrencies;
 };
 
-type TGetSymbolsQuery = {
+type TGetCurrenciesQuery = {
 	from: string;
 	to: string;
 	amount: number;
@@ -24,15 +24,15 @@ type TConvertCyrrencyData = {
 	info: {
 		rate: number;
 	};
-	query: TGetSymbolsQuery;
+	query: TGetCurrenciesQuery;
 	result: number;
 	success: true;
 };
 
 export type {
-	TSymbols,
-	TSymbol,
-	TGetSymbolsData,
-	TGetSymbolsQuery,
+	TCurrencies,
+	TCurrency,
+	TGetCurrenciesData,
+	TGetCurrenciesQuery,
 	TConvertCyrrencyData,
 };

@@ -3,22 +3,22 @@ import axios from 'axios';
 import { BASE_URL } from './config';
 
 import type {
-	TGetSymbolsData,
+	TGetCurrenciesData,
 	TConvertCyrrencyData,
-	TGetSymbolsQuery,
+	TGetCurrenciesQuery,
 } from '@/types/index';
 
 export class CurrencyApi {
-	static async getSymbols() {
+	static async getCurrencies() {
 		return axios
-			.get<TGetSymbolsData>(`${BASE_URL}symbols`)
+			.get<TGetCurrenciesData>(`${BASE_URL}symbols`)
 			.then((response) => {
 				return response.data;
 			})
-			.catch((e) => console.log('getSymbols error: ', e));
+			.catch((e) => console.log('getCurrencies error: ', e));
 	}
 
-	static async convertCurrency({ from, to, amount }: TGetSymbolsQuery) {
+	static async convertCurrency({ from, to, amount }: TGetCurrenciesQuery) {
 		return axios
 			.get<TConvertCyrrencyData>(
 				`${BASE_URL}convert?from=${from}&to=${to}&amount=${amount}`

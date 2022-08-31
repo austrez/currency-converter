@@ -1,15 +1,15 @@
 import type {
-	TSymbols,
-	TSymbol,
-	TGetSymbolsData,
-	TGetSymbolsQuery,
+	TCurrencies,
+	TCurrency,
+	TGetCurrenciesData,
+	TGetCurrenciesQuery,
 	TConvertCyrrencyData,
 } from '@/types/api';
 
 export type {
-	TSymbols,
-	TSymbol,
-	TGetSymbolsData,
-	TGetSymbolsQuery,
+	TCurrencies,
+	TCurrency,
+	TGetCurrenciesData,
+	TGetCurrenciesQuery,
 	TConvertCyrrencyData,
 };

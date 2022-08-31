@@ -5,7 +5,7 @@
 				<span class="base-input-title">From:</span>
 
 				<input
-					v-model="fromCurrencyValue"
+					v-model.number="fromCurrencyValue"
 					@input="onInput"
 					:name="INPUT_NAMES.FROM"
 					class="base-input"
@@ -15,12 +15,16 @@
 			</label>
 
 			<select
-				v-model="fromCurrency"
+				v-model="fromCurrencyCode"
 				@input="onInput"
 				:name="INPUT_NAMES.FROM"
 				class="base-select"
 			>
-				<option v-for="value in symbols" :key="value.code" :value="value.code">
+				<option
+					v-for="value in currencies"
+					:key="value.code"
+					:value="value.code"
+				>
 					{{ value.description }}
 				</option>
 			</select>
@@ -31,7 +35,7 @@
 				<span class="base-input-title">To:</span>
 
 				<input
-					v-model="toCurrencyValue"
+					v-model.number="toCurrencyValue"
 					@input="onInput"
 					:name="INPUT_NAMES.TO"
 					class="base-input"
@@ -41,12 +45,16 @@
 			</label>
 
 			<select
-				v-model="toCurrency"
+				v-model="toCurrencyCode"
 				@input="onInput"
 				:name="INPUT_NAMES.TO"
 				class="base-select"
 			>
-				<option v-for="value in symbols" :key="value.code" :value="value.code">
+				<option
+					v-for="value in currencies"
+					:key="value.code"
+					:value="value.code"
+				>
 					{{ value.description }}
 				</option>
 			</select>
@@ -58,12 +66,12 @@
 import { defineComponent, nextTick, reactive, ref } from 'vue';
 import { CurrencyApi } from '@/api/api';
 
-import type { TSymbol, TGetSymbolsQuery } from '@/types/index';
+import type { TCurrency, TGetCurrenciesQuery } from '@/types/index';
 
-enum INPUT_NAMES {
-	FROM = 'FROM',
-	TO = 'TO',
-}
+const INPUT_NAMES = {
+	FROM: 'FROM',
+	TO: 'TO',
+};
 
 const DEFAULT_CURRENCIES = {
 	USD: 'USD',
@@ -80,7 +88,7 @@ const getConvertionResult = async ({
 	from,
 	to,
 	amount,
-}: TGetSymbolsQuery): Promise<number> => {
+}: TGetCurrenciesQuery): Promise<number> => {
 	const data = await CurrencyApi.convertCurrency({
 		from,
 		to,
@@ -92,11 +100,11 @@ const getConvertionResult = async ({
 
 export default defineComponent({
 	setup() {
-		const symbols = reactive<TSymbol[]>([]);
-		const fromCurrencyValue = ref<string>('0');
-		const toCurrencyValue = ref<string>('0');
-		const fromCurrency = ref<string>('');
-		const toCurrency = ref<string>('');
+		const currencies = reactive<TCurrency[]>([]);
+		const fromCurrencyValue = ref<number>(0);
+		const toCurrencyValue = ref<number>(0);
+		const fromCurrencyCode = ref<string>('');
+		const toCurrencyCode = ref<string>('');
 
 		const convertCurrency = async (inputName: string) => {
 			let result = null;
@@ -104,22 +112,22 @@ export default defineComponent({
 			switch (inputName) {
 				case INPUT_NAMES.FROM:
 					result = await getConvertionResult({
-						from: fromCurrency.value,
-						to: toCurrency.value,
-						amount: +fromCurrencyValue.value,
+						from: fromCurrencyCode.value,
+						to: toCurrencyCode.value,
+						amount: fromCurrencyValue.value,
 					});
 
-					toCurrencyValue.value = result.toString();
+					toCurrencyValue.value = result;
 					break;
 
 				case INPUT_NAMES.TO:
 					result = await getConvertionResult({
-						from: toCurrency.value,
-						to: fromCurrency.value,
-						amount: +toCurrencyValue.value,
+						from: toCurrencyCode.value,
+						to: fromCurrencyCode.value,
+						amount: toCurrencyValue.value,
 					});
 
-					fromCurrencyValue.value = result.toString();
+					fromCurrencyValue.value = result;
 					break;
 			}
 		};
@@ -130,32 +138,31 @@ export default defineComponent({
 		};
 
 		return {
-			symbols,
-			fromCurrency,
-			toCurrency,
+			currencies,
+			fromCurrencyCode,
+			toCurrencyCode,
 			fromCurrencyValue,
 			toCurrencyValue,
 			INPUT_NAMES,
 			onInput,
-			convertCurrency,
 		};
 	},
 	async created() {
-		const data = await CurrencyApi.getSymbols();
+		const data = await CurrencyApi.getCurrencies();
 
 		if (data) {
 			const keys = Object.keys(data.symbols);
-			keys.forEach((key) => this.symbols.push(data.symbols[key]));
+			keys.forEach((key) => this.currencies.push(data.symbols[key]));
 		}
 
 		const currentLang = navigator.language;
 
 		if (currentLang.includes(SUPPORTED_LANGS.en)) {
-			this.fromCurrency = DEFAULT_CURRENCIES.USD;
-			this.toCurrency = DEFAULT_CURRENCIES.EUR;
+			this.fromCurrencyCode = DEFAULT_CURRENCIES.USD;
+			this.toCurrencyCode = DEFAULT_CURRENCIES.EUR;
 		} else if (currentLang.includes(SUPPORTED_LANGS.ru)) {
-			this.fromCurrency = DEFAULT_CURRENCIES.RUB;
-			this.toCurrency = DEFAULT_CURRENCIES.USD;
+			this.fromCurrencyCode = DEFAULT_CURRENCIES.RUB;
+			this.toCurrencyCode = DEFAULT_CURRENCIES.USD;
 		}
 	},
 });
