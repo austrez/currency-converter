@@ -1,6 +1,6 @@
 <template>
 	<div class="app">
-		<h1 class="app__title">Exange rates</h1>
+		<h1 class="app__title">Currency converter</h1>
 
 		<CurrencyConverter />
 	</div>
@@ -35,5 +35,6 @@ export default defineComponent({
 
 .app__title {
 	margin-bottom: $gap-medium;
+	text-align: center;
 }
 </style>
