@@ -5,7 +5,7 @@
 				<span class="base-input-title">From:</span>
 
 				<input
-					v-model.number="fromCurrencyValue"
+					v-model="fromCurrencyValue"
 					@input="onInput"
 					:name="INPUT_NAMES.FROM"
 					class="base-input"
@@ -35,7 +35,7 @@
 				<span class="base-input-title">To:</span>
 
 				<input
-					v-model.number="toCurrencyValue"
+					v-model="toCurrencyValue"
 					@input="onInput"
 					:name="INPUT_NAMES.TO"
 					class="base-input"
@@ -71,6 +71,7 @@ import {
 	DEFAULT_CURRENCIES,
 	SUPPORTED_LANGS,
 } from '@/utils/consts';
+import isNumeric from '@/utils/isNumeric';
 
 import type { TCurrency, TGetCurrenciesQuery } from '@/types/index';
 
@@ -96,37 +97,36 @@ export default defineComponent({
 		const fromCurrencyCode = ref<string>('');
 		const toCurrencyCode = ref<string>('');
 
-		const convertCurrency = async (inputName: string) => {
-			let result = null;
-
+		const convertCurrency = async ({ inputName }: { inputName: string }) => {
 			switch (inputName) {
 				case INPUT_NAMES.FROM:
-					result = await getConvertionResult({
+					if (!isNumeric(fromCurrencyValue.value.toString())) return;
+
+					toCurrencyValue.value = await getConvertionResult({
 						from: fromCurrencyCode.value,
 						to: toCurrencyCode.value,
 						amount: fromCurrencyValue.value,
 					});
 
-					toCurrencyValue.value = result;
 					break;
 
 				case INPUT_NAMES.TO:
-					result = await getConvertionResult({
+					if (!isNumeric(toCurrencyValue.value.toString())) return;
+
+					fromCurrencyValue.value = await getConvertionResult({
 						from: toCurrencyCode.value,
 						to: fromCurrencyCode.value,
 						amount: toCurrencyValue.value,
 					});
 
-					fromCurrencyValue.value = result;
 					break;
 			}
 		};
 
-		const onInput = (e: Event) => {
+		const onInput = async (e: Event) => {
 			const el = e.target as HTMLInputElement | HTMLSelectElement;
-			if (!+el.value) return;
 
-			nextTick(() => convertCurrency(el.name));
+			nextTick(() => convertCurrency({ inputName: el.name }));
 		};
 
 		return {
