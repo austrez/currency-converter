@@ -1,5 +1,7 @@
 # currency-converter
 
+[See demo](http://exange-rates.surge.sh)
+
 ## Project Setup
 
 ```sh
