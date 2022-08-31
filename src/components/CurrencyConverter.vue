@@ -133,8 +133,10 @@ export default defineComponent({
 		};
 
 		const onInput = (e: Event) => {
-			const name = (e.target as HTMLInputElement | HTMLSelectElement).name;
-			nextTick(() => convertCurrency(name));
+			const el = e.target as HTMLInputElement | HTMLSelectElement;
+			if (!+el.value) return;
+
+			nextTick(() => convertCurrency(el.name));
 		};
 
 		return {
